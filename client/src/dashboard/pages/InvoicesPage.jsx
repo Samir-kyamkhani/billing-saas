@@ -42,7 +42,9 @@ const InvoicesPage = () => {
     setInvoiceList((prev) => {
       if (editInvoiceData) {
         // Edit existing invoice
-        return prev?.map((inv) => (inv.id === invoiceData.id ? invoiceData : inv));
+        return prev?.map((inv) =>
+          inv.id === invoiceData.id ? invoiceData : inv
+        );
       } else {
         // Add new invoice
         return [...prev, invoiceData];
@@ -58,26 +60,28 @@ const InvoicesPage = () => {
   };
 
   return (
-    <div>
-      <PageHeader
-        title="Invoices"
-        filters={["All", "Paid", "Pending", "Overdue"]}
-        onFilterChange={handleFilterChange}
-        showSearch={true}
-        renderActions={() => (
-          <Button
-            variant="primary"
-            size="md"
-            leftIcon={<FaPlus />}
-            onClick={() => {
-              setEditInvoiceData(null); // clear form for new invoice
-              setShowInvoiceForm(true);
-            }}
-          >
-            Add Invoice
-          </Button>
-        )}
-      />
+    <div className="space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border p-4 border-gray-100">
+        <PageHeader
+          title="Invoices"
+          filters={["All", "Paid", "Pending", "Overdue"]}
+          onFilterChange={handleFilterChange}
+          showSearch={true}
+          renderActions={() => (
+            <Button
+              variant="primary"
+              size="md"
+              leftIcon={<FaPlus />}
+              onClick={() => {
+                setEditInvoiceData(null); // clear form for new invoice
+                setShowInvoiceForm(true);
+              }}
+            >
+              Add Invoice
+            </Button>
+          )}
+        />
+      </div>
 
       {/* Invoice Form Modal */}
       {showInvoiceForm && (
