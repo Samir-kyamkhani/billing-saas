@@ -2,9 +2,15 @@ import { useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import SearchInput from "./SearchInput";
 
-const FilterButtons = ({ items, activeItem, onClick, activeClass, defaultClass }) => {
+const FilterButtons = ({
+  items,
+  activeItem,
+  onClick,
+  activeClass,
+  defaultClass,
+}) => {
   return (
-    <div className="flex flex-wrap gap-2 mb-4 overflow-x-auto">
+    <div className="flex flex-wrap   px-4 py-2 md:p-6 gap-2 mb-4 overflow-x-auto">
       {items.map((item) => (
         <button
           key={item}
