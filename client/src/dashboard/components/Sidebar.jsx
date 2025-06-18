@@ -14,18 +14,20 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { FaRepeat } from "react-icons/fa6";
+import { IoLogOut } from "react-icons/io5";
 
 const links = [
   { to: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
-  { to: "/orders", label: "Orders", icon: <FaShoppingCart /> },
-  { to: "/inventory", label: "Inventory", icon: <FaBox /> },
   { to: "/customers", label: "Customers", icon: <FaUsers /> },
-  { to: "/payments", label: "Payments", icon: <FaMoneyCheckAlt /> },
+  { to: "/inventory", label: "Inventory", icon: <FaBox /> },
+  { to: "/orders", label: "Orders", icon: <FaShoppingCart /> },
+  // { to: "/payments", label: "Payments", icon: <FaMoneyCheckAlt /> },
   { to: "invoices", label: "Invoices", icon: <FaFileInvoiceDollar /> },
   { to: "/reports", label: "Reports", icon: <FaChartBar /> },
   { to: "/team", label: "Team", icon: <FaUserShield /> },
   { to: "/subscriptions", label: "Subscriptions", icon: <FaRepeat /> },
   { to: "/settings", label: "Settings", icon: <FaCog /> },
+  { to: "/logout", label: "Logout", icon: <IoLogOut  /> },
 ];
 
 export default function Sidebar() {
@@ -34,7 +36,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile toggle */}
-      <div className="md:hidden flex justify-between items-center bg-white px-4 py-3 border-b border-gray-200 shadow-sm">
+      <div className="md:hidden flex justify-between items-center bg-white px-4 py-3 border-b border-gray-300 shadow-sm">
         <h1 className="text-xl font-bold text-gray-700">Billing Software</h1>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -46,7 +48,7 @@ export default function Sidebar() {
 
       {/* Sidebar menu */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm px-4 py-6 z-40 transform transition-transform duration-300 ease-in-out 
+        className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-300 shadow-sm px-4 py-6 z-40 transform transition-transform duration-300 ease-in-out 
     ${isOpen ? "translate-x-0" : "-translate-x-full"} 
     md:relative md:translate-x-0 md:h-auto md:block`}
       >

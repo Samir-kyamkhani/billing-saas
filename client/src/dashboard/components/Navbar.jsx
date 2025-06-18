@@ -12,7 +12,7 @@ export default function Navbar() {
     .join(" ");
 
   return (
-    <header className="border-b border-gray-200 px-4 py-3 shadow-sm flex items-center justify-between">
+    <header className="border-b border-gray-300 px-4 py-3 shadow-sm flex items-center justify-between">
       {/* Title Section */}
       <h1 className="text-base md:text-2xl font-bold text-black capitalize">
         {pageTitle || "Dashboard"}
