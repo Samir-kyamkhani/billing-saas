@@ -195,6 +195,61 @@ export const customers = [
   },
 ];
 
+export const team = [
+  {
+    id: 1,
+    teamId: "TEAM-001",
+    name: "Alice Johnson",
+    email: "alice@example.com",
+    phone: "555-1234",
+    location: "New York",
+    role: "Product Manager",
+    accessRole: "Manager",
+  },
+  {
+    id: 2,
+    teamId: "TEAM-002",
+    name: "Bob Smith",
+    email: "bob@example.com",
+    phone: "555-5678",
+    location: "Chicago",
+    role: "Engineer",
+    accessRole: "Staff",
+  },
+];
+
+export const subscriptions = [
+  {
+    id: 1,
+    subscriptionId: "SUB-001",
+    customerName: "John Doe",
+    plan: "Pro Plan",
+    status: "active", // or "paid", "canceled"
+    startDate: "2025-01-01",
+    endDate: "2025-12-31",
+  },
+];
+
+export const settingsData = {
+  general: [
+    { id: 1, key: "Company Name", value: "My Company" },
+    { id: 2, key: "Currency", value: "USD" },
+    { id: 3, key: "Date Format", value: "MM/DD/YYYY" },
+  ],
+  team: [
+    { id: 1, key: "Alice", value: "Admin" },
+    { id: 2, key: "Bob", value: "User" },
+  ],
+  billing: [
+    { id: 1, key: "Payment Gateway", value: "Stripe" },
+    { id: 2, key: "Auto Invoice", value: "Enabled" },
+  ],
+  notifications: [
+    { id: 1, key: "Email Notifications", value: "Enabled" },
+    { id: 2, key: "SMS Notifications", value: "Disabled" },
+  ],
+};
+
 export const statusClasses = {
   Paid: "bg-green-100 text-green-800",
   Pending: "bg-yellow-100 text-yellow-800",

@@ -13,6 +13,10 @@ import InvoicesPage from "./dashboard/pages/InvoicesPage.jsx";
 import InventoryPage from "./dashboard/pages/InventoryPage.jsx";
 import OrdersPage from "./dashboard/pages/OrdersPage.jsx";
 import CustomersPage from "./dashboard/pages/CustomersPage.jsx";
+import TeamPage from "./dashboard/pages/TeamPage.jsx";
+import ReportsPage from "./dashboard/pages/ReportsPage.jsx";
+import SubscriptionsPage from "./dashboard/pages/SubscriptionsPage.jsx";
+import SettingsPage from "./dashboard/pages/SettingsPage.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,8 +26,11 @@ const router = createBrowserRouter(
       <Route path="/inventory" element={<InventoryPage />} />
       <Route path="/orders" element={<OrdersPage />} />
       <Route path="/customers" element={<CustomersPage />} />
+      <Route path="/team" element={<TeamPage />} />
+      <Route path="/reports" element={<ReportsPage />} />
+      <Route path="/subscriptions" element={<SubscriptionsPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
       {/* <Route path="/payments" element={<PaymentsPage />} /> */}
-      {/* <Route path="/settings" element={<SettingsPage />} /> */}
     </Route>
   )
 );
