@@ -1,15 +1,16 @@
 import React, { useState, useMemo } from "react";
 import { FaPlus } from "react-icons/fa";
-import { User, Eye, Edit3, Trash2 } from "lucide-react";
+import { User } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import AddCustomerForm from "../components/Forms/AddCustomerForm"; // You need to create this
 import { customers as customerData } from "../.."; // Sample data source
 
 const CustomersTable = ({ customers, onEdit, onDelete, onView }) => (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-300 overflow-hidden">
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[600px]">
+  <div className=" overflow-hidden">
+    <div className="overflow-x-auto ">
+      {/* Table for medium and up screens */}
+      <table className="w-full min-w-[600px] bg-white rounded-xl shadow-sm border overflow-hidden hidden sm:table">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
             {[
@@ -43,7 +44,7 @@ const CustomersTable = ({ customers, onEdit, onDelete, onView }) => (
               <td className="px-6 py-4">{customer.phone}</td>
               <td className="px-6 py-4">{customer.location}</td>
               <td className="px-6 py-4">
-                <div className="flex items-center gap-8 space-x-1">
+                <div className="flex items-center gap-4 space-x-1">
                   <Button
                     variant="primary"
                     size="md"
@@ -71,6 +72,56 @@ const CustomersTable = ({ customers, onEdit, onDelete, onView }) => (
           ))}
         </tbody>
       </table>
+
+      {/* Card layout for small screens */}
+      <div className="sm:hidden space-y-4 py-2">
+        {customers.map((customer) => (
+          <div
+            key={customer.id}
+            className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm"
+          >
+            <div className="mb-2">
+              <span className="font-semibold text-gray-700">Customer ID: </span>
+              <span>{customer.customerId}</span>
+            </div>
+            <div className="mb-2">
+              <span className="font-semibold text-gray-700">Name: </span>
+              <span>{customer.name}</span>
+            </div>
+            <div className="mb-2">
+              <span className="font-semibold text-gray-700">Email: </span>
+              <span>{customer.email}</span>
+            </div>
+            <div className="mb-2">
+              <span className="font-semibold text-gray-700">Phone: </span>
+              <span>{customer.phone}</span>
+            </div>
+            <div className="mb-4">
+              <span className="font-semibold text-gray-700">Location: </span>
+              <span>{customer.location}</span>
+            </div>
+            <div className="flex gap-4">
+              <Button variant="primary" size="sm" onClick={() => onView(customer.id)}>
+                View
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
+                onClick={() => onEdit(customer.id)}
+              >
+                Edit
+              </Button>
+              <button
+                className="text-red-600 hover:text-red-800 font-semibold"
+                onClick={() => onDelete(customer.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 );
@@ -100,6 +151,7 @@ export default function CustomersPage() {
       setCustomers((prev) => prev?.filter((c) => c.id !== id));
     }
   };
+
   const handleView = (id) => console.log("View customer:", id);
 
   const handleSaveCustomer = (data) => {
@@ -146,12 +198,14 @@ export default function CustomersPage() {
       </div>
 
       {showForm && (
-        <AddCustomerForm
-          isEdit={!!editCustomerData}
-          customerData={editCustomerData}
-          onSubmit={handleSaveCustomer}
-          onClose={handleCloseForm}
-        />
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-300 max-w-md mx-auto w-full">
+          <AddCustomerForm
+            isEdit={!!editCustomerData}
+            customerData={editCustomerData}
+            onSubmit={handleSaveCustomer}
+            onClose={handleCloseForm}
+          />
+        </div>
       )}
 
       <CustomersTable
@@ -162,7 +216,7 @@ export default function CustomersPage() {
       />
 
       {filteredCustomers.length === 0 && (
-        <div className="bg-white rounded-xl text-center shadow-sm border border-gray-100">
+        <div className="bg-white rounded-xl text-center shadow-sm border border-gray-100 p-8">
           <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No customers found

@@ -19,7 +19,6 @@ const InvoicesPage = () => {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
-    console.log("Selected filter:", selectedFilter);
   };
 
   const handleEditInvoice = useCallback((invoice) => {
@@ -30,8 +29,7 @@ const InvoicesPage = () => {
   const handleDeleteInvoice = (invoiceId) => {
     if (window.confirm("Are you sure you want to delete this invoice?")) {
       setInvoiceList((prev) => prev.filter((inv) => inv.id !== invoiceId));
-      // If you are editing this invoice, close the form
-      if (editInvoiceData && editInvoiceData.id === invoiceId) {
+      if (editInvoiceData?.id === invoiceId) {
         setShowInvoiceForm(false);
         setEditInvoiceData(null);
       }
@@ -41,12 +39,8 @@ const InvoicesPage = () => {
   const handleSave = (invoiceData) => {
     setInvoiceList((prev) => {
       if (editInvoiceData) {
-        // Edit existing invoice
-        return prev?.map((inv) =>
-          inv.id === invoiceData.id ? invoiceData : inv
-        );
+        return prev.map((inv) => (inv.id === invoiceData.id ? invoiceData : inv));
       } else {
-        // Add new invoice
         return [...prev, invoiceData];
       }
     });
@@ -61,19 +55,19 @@ const InvoicesPage = () => {
 
   return (
     <div className="space-y-8">
-      <div className="bg-white rounded-xl shadow-sm border p-4 border-gray-100">
+      <div className="bg-white rounded-xl shadow-sm border  border-gray-100">
         <PageHeader
           title="Invoices"
           filters={["All", "Paid", "Pending", "Overdue"]}
           onFilterChange={handleFilterChange}
-          showSearch={true}
+          showSearch
           renderActions={() => (
             <Button
               variant="primary"
               size="md"
               leftIcon={<FaPlus />}
               onClick={() => {
-                setEditInvoiceData(null); // clear form for new invoice
+                setEditInvoiceData(null);
                 setShowInvoiceForm(true);
               }}
             >
@@ -83,21 +77,18 @@ const InvoicesPage = () => {
         />
       </div>
 
-      {/* Invoice Form Modal */}
       {showInvoiceForm && (
         <AddInvoiceForm
           isEdit={!!editInvoiceData}
           invoiceData={editInvoiceData}
           onSubmit={handleSave}
           onClose={handleClose}
-          // clients={clients} // pass your clients here if available
-          // projects={projects} // pass your projects here if available
         />
       )}
 
-      {/* Invoice Table */}
-      <div className="overflow-auto rounded-lg border border-gray-300 bg-white">
-        <table className="w-full min-w-[600px]">
+      {/* Table for desktop */}
+      <div className="hidden md:block overflow-auto rounded-lg border border-gray-300 bg-white">
+        <table className="w-full min-w-[700px]">
           <thead>
             <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
               <th className="px-4 py-3">Invoice</th>
@@ -120,7 +111,7 @@ const InvoicesPage = () => {
                 <td className="px-4 py-3">{inv.invid}</td>
                 <td className="px-4 py-3">{inv.client}</td>
                 <td className="px-4 py-3">
-                  {inv?.products?.map((order) => order.name).join(", ")}
+                  {inv?.products?.map((p) => p.name).join(", ")}
                 </td>
                 <td className="px-4 py-3">{inv.date}</td>
                 <td className="px-4 py-3">{inv.dueDate}</td>
@@ -134,29 +125,86 @@ const InvoicesPage = () => {
                     {inv.status}
                   </span>
                 </td>
-                <td className="py-3 flex items-center justify-center gap-8">
-                  <Button
-                    variant="secondary"
-                    size="md"
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-left"
-                    onClick={() => handleEditInvoice(inv)}
-                  >
-                    Edit
-                  </Button>
-                  <button
-                    className="text-red-600 hover:text-red-800 font-semibold text-left"
-                    onClick={() => handleDeleteInvoice(inv.invid)}
-                  >
-                    Delete
-                  </button>
+                <td className="px-4 py-3">
+                  <div className="flex gap-3">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleEditInvoice(inv)}
+                    >
+                      Edit
+                    </Button>
+                    <button
+                      className="text-red-600 hover:text-red-800 text-sm"
+                      onClick={() => handleDeleteInvoice(inv.invid)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
-                <td>
+                <td className="px-4 py-3">
                   <InvoiceDownloadButton invoice={inv} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Card layout for mobile */}
+      <div className="md:hidden grid grid-cols-1 gap-4">
+        {filteredInvoices?.map((inv) => (
+          <div
+            key={inv.invid}
+            className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 space-y-2"
+          >
+            <div className="flex justify-between items-center">
+              <h4 className="font-semibold text-gray-800">{inv.invid}</h4>
+              <span
+                className={`px-2 py-1 text-xs rounded-full font-medium ${
+                  statusClasses[inv.status] || "bg-gray-200 text-gray-800"
+                }`}
+              >
+                {inv.status}
+              </span>
+            </div>
+            <p className="text-sm text-gray-600">
+              <strong>Client:</strong> {inv.client}
+            </p>
+            <p className="text-sm text-gray-600">
+              <strong>Orders:</strong>{" "}
+              {inv?.products?.map((p) => p.name).join(", ")}
+            </p>
+            <p className="text-sm text-gray-600">
+              <strong>Date:</strong> {inv.date}
+            </p>
+            <p className="text-sm text-gray-600">
+              <strong>Due:</strong> {inv.dueDate}
+            </p>
+            <p className="text-sm text-gray-600">
+              <strong>Amount:</strong> {inv.amount}
+            </p>
+
+            <div className="flex flex-wrap justify-between items-center gap-3 pt-3">
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleEditInvoice(inv)}
+                >
+                  Edit
+                </Button>
+                <button
+                  className="text-red-600 text-sm font-medium"
+                  onClick={() => handleDeleteInvoice(inv.invid)}
+                >
+                  Delete
+                </button>
+              </div>
+              <InvoiceDownloadButton invoice={inv} />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

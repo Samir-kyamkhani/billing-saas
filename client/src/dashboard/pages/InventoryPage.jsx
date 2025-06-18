@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { Eye, Edit3, Trash2, MoreVertical, Package } from "lucide-react";
+import { Package } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import { FaPlus } from "react-icons/fa";
@@ -42,9 +42,9 @@ const StatusBadge = ({ status }) => {
 };
 
 const InventoryTable = ({ items, onEdit, onDelete, onView }) => (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+  <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div className="overflow-x-auto">
-      <table className="w-full">
+      <table className="w-full min-w-[700px]">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
             {["Product", "Category", "Stock", "Price", "Status", "Actions"].map(
@@ -82,9 +82,7 @@ const InventoryTable = ({ items, onEdit, onDelete, onView }) => (
                 <div className="text-sm font-medium text-gray-900">
                   {item.quantity}
                 </div>
-                <div className="text-xs text-gray-500">
-                  Min: {item.minStock}
-                </div>
+                <div className="text-xs text-gray-500">Min: {item.minStock}</div>
               </td>
               <td className="px-6 py-4">
                 <div className="text-sm font-medium text-gray-900">
@@ -96,24 +94,23 @@ const InventoryTable = ({ items, onEdit, onDelete, onView }) => (
                 <StatusBadge status={item.status} />
               </td>
               <td className="px-6 py-4">
-                <div className="flex items-center gap-8 space-x-1">
+                <div className="flex items-center gap-4">
                   <Button
                     variant="primary"
-                    size="md"
+                    size="sm"
                     onClick={() => onView(item.id)}
                   >
                     View
                   </Button>
                   <Button
                     variant="secondary"
-                    size="md"
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-left"
+                    size="sm"
                     onClick={() => onEdit(item.id)}
                   >
                     Edit
                   </Button>
                   <button
-                    className="text-red-600 hover:text-red-800 font-semibold text-left"
+                    className="text-red-600 hover:text-red-800 text-sm"
                     onClick={() => onDelete(item.id)}
                   >
                     Delete
@@ -134,8 +131,8 @@ export default function InventoryPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
 
-  const [showInventoryForm, setshowInventoryForm] = useState(false);
-  const [editInventoryeData, setEditInventoryeData] = useState(null);
+  const [showInventoryForm, setShowInventoryForm] = useState(false);
+  const [editInventoryData, setEditInventoryData] = useState(null);
 
   const filteredInventory = useMemo(() => {
     return inventory.filter((item) => {
@@ -153,51 +150,54 @@ export default function InventoryPage() {
     });
   }, [inventory, searchTerm, selectedCategory, selectedStatus]);
 
-  const handleEdit = useCallback((invoice) => {
-    setEditInventoryeData(invoice);
-    setshowInventoryForm(true);
-  }, []);
+  const handleEdit = useCallback((id) => {
+    const item = inventory.find((inv) => inv.id === id);
+    setEditInventoryData(item);
+    setShowInventoryForm(true);
+  }, [inventory]);
 
-  const handleDelete = (invoiceId) => {
-    if (window.confirm("Are you sure you want to delete this invoice?")) {
-      setInvoiceList((prev) => prev.filter((inv) => inv.id !== invoiceId));
-      // If you are editing this invoice, close the form
-      if (editInvoiceData && editInvoiceData.id === invoiceId) {
-        setshowInventoryForm(false);
-        setEditInventoryeData(null);
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      setInventory((prev) => prev.filter((item) => item.id !== id));
+      if (editInventoryData?.id === id) {
+        setShowInventoryForm(false);
+        setEditInventoryData(null);
       }
     }
   };
-  const handleView = (item) => console.log("View item:", item);
 
-  const handleSaveInvoice = (invoiceData) => {
-    console.log("Saved invoice:", invoiceData);
-    setshowInventoryForm(false);
-    setEditInventoryeData(null);
+  const handleView = (id) => console.log("View item:", id);
+
+  const handleSaveInventory = (itemData) => {
+    console.log("Saved item:", itemData);
+    setShowInventoryForm(false);
+    setEditInventoryData(null);
+    // Here you can add logic to update or add item in the inventory list
   };
 
-  const handleCloseInvoiceForm = () => {
-    setshowInventoryForm(false);
-    setEditInventoryeData(null);
+  const handleCloseInventoryForm = () => {
+    setShowInventoryForm(false);
+    setEditInventoryData(null);
   };
 
   return (
-    <div>
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+    <div className="space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <PageHeader
           title="Inventory"
           filters={statusFilters}
           categories={categories}
           onFilterChange={() => {}}
           showSearch={true}
+          onSearchChange={(e) => setSearchTerm(e.target.value)}
           renderActions={() => (
             <Button
               variant="primary"
               size="md"
               leftIcon={<FaPlus />}
               onClick={() => {
-                setEditInventoryeData(null);
-                setshowInventoryForm(true);
+                setEditInventoryData(null);
+                setShowInventoryForm(true);
               }}
             >
               Add Inventory
@@ -208,33 +208,14 @@ export default function InventoryPage() {
 
       {showInventoryForm && (
         <AddInventoryForm
-          isEdit={!!editInventoryeData}
-          invoiceData={editInventoryeData}
-          onSubmit={handleSaveInvoice}
-          onClose={handleCloseInvoiceForm}
+          isEdit={!!editInventoryData}
+          invoiceData={editInventoryData}
+          onSubmit={handleSaveInventory}
+          onClose={handleCloseInventoryForm}
         />
       )}
 
-      {/* <div className="flex items-center justify-between text-sm text-gray-600 my-4">
-        <p>
-          Showing {filteredInventory.length} of {inventory.length} products
-        </p>
-        {(searchTerm ||
-          selectedCategory !== "All" ||
-          selectedStatus !== "All") && (
-          <button
-            onClick={() => {
-              setSearchTerm("");
-              setSelectedCategory("All");
-              setSelectedStatus("All");
-            }}
-            className="text-blue-600 hover:text-blue-700"
-          >
-            Clear filters
-          </button>
-        )}
-      </div> */}
-
+      {/* Desktop Table */}
       <InventoryTable
         items={filteredInventory}
         onEdit={handleEdit}
@@ -242,6 +223,62 @@ export default function InventoryPage() {
         onView={handleView}
       />
 
+      {/* Mobile Cards */}
+      <div className="md:hidden grid grid-cols-1 gap-4">
+        {filteredInventory.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 space-y-2"
+          >
+            <div className="flex items-center space-x-4">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-12 h-12 rounded-lg object-cover"
+              />
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900">{item.name}</div>
+                <div className="text-xs text-gray-500">SKU: {item.sku}</div>
+              </div>
+              <StatusBadge status={item.status} />
+            </div>
+
+            <div className="text-sm text-gray-600">
+              <strong>Category:</strong> {item.category}
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Stock:</strong> {item.quantity} (Min: {item.minStock})
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Price:</strong> ${item.price} <br />
+              <small className="text-gray-500">Cost: ${item.cost}</small>
+            </div>
+
+            <div className="flex justify-between items-center pt-3 gap-2">
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleEdit(item.id)}
+                >
+                  Edit
+                </Button>
+                <button
+                  className="text-red-600 text-sm font-medium"
+                  onClick={() => handleDelete(item.id)}
+                >
+                  Delete
+                </button>
+              </div>
+              <Button variant="primary" size="sm" onClick={() => handleView(item.id)}>
+                View
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty State */}
       {filteredInventory.length === 0 && (
         <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
           <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -249,18 +286,22 @@ export default function InventoryPage() {
             No products found
           </h3>
           <p className="text-gray-600 mb-6">
-            {searchTerm ||
+            {searchTerm !== "" ||
             selectedCategory !== "All" ||
             selectedStatus !== "All"
               ? "Try adjusting your search or filters"
               : "Get started by adding your first product"}
           </p>
-          <button
-            onClick={() => setshowInventoryForm(true)}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setEditInventoryData(null);
+              setShowInventoryForm(true);
+            }}
           >
             Add Inventory
-          </button>
+          </Button>
         </div>
       )}
     </div>

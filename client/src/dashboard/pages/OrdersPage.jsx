@@ -5,7 +5,6 @@ import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import { orders as product } from "../..";
 import AddOrderForm from "../components/Forms/AddOrderForm";
-// import AddOrderForm from "../components/Forms/AddOrderForm"; // Optional form
 
 const statusLabels = {
   Cod: {
@@ -46,16 +45,16 @@ const StatusBadge = ({ status }) => {
 };
 
 const OrdersTable = ({ orders, onEdit, onDelete, onView }) => (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+  <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm min-w-[700px]">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
             {[
               "Order Id",
               "Customer",
               "Product",
-              "quantity",
+              "Quantity",
               "Payment Mod",
               "Date",
               "Total",
@@ -89,24 +88,15 @@ const OrdersTable = ({ orders, onEdit, onDelete, onView }) => (
                 <StatusBadge status={order.status} />
               </td>
               <td className="px-6 py-4">
-                <div className="flex items-center gap-8 space-x-1">
-                  <Button
-                    variant="primary"
-                    size="md"
-                    onClick={() => onView(order.id)}
-                  >
+                <div className="flex items-center gap-2">
+                  <Button variant="primary" size="sm" onClick={() => onView(order.id)}>
                     View
                   </Button>
-                  <Button
-                    variant="secondary"
-                    size="md"
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-left"
-                    onClick={() => onEdit(order.id)}
-                  >
+                  <Button variant="secondary" size="sm" onClick={() => onEdit(order.id)}>
                     Edit
                   </Button>
                   <button
-                    className="text-red-600 hover:text-red-800 font-semibold text-left"
+                    className="text-red-600 hover:text-red-800 text-sm"
                     onClick={() => onDelete(order.id)}
                   >
                     Delete
@@ -123,9 +113,8 @@ const OrdersTable = ({ orders, onEdit, onDelete, onView }) => (
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState(product);
-  const [showOrderForm, setshowOrderForm] = useState("");
-  const [editOrdereData, setEditOrdereData] = useState("");
-
+  const [showOrderForm, setshowOrderForm] = useState(false);
+  const [editOrdereData, setEditOrdereData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredOrders = useMemo(() => {
@@ -154,9 +143,10 @@ export default function OrdersPage() {
     setshowOrderForm(false);
     setEditOrdereData(null);
   };
+
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+    <div className="space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <PageHeader
           title="Orders"
           filters={["Pending", "Processing", "Completed", "Cancelled"]}
@@ -187,6 +177,7 @@ export default function OrdersPage() {
         />
       )}
 
+      {/* Desktop Table */}
       <OrdersTable
         orders={filteredOrders}
         onEdit={handleEdit}
@@ -194,16 +185,72 @@ export default function OrdersPage() {
         onView={handleView}
       />
 
+      {/* Mobile Cards */}
+      <div className="md:hidden grid grid-cols-1 gap-4">
+        {filteredOrders.map((order) => (
+          <div
+            key={order.id}
+            className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 space-y-2"
+          >
+            <div className="flex justify-between items-center">
+              <div className="font-semibold text-gray-800">
+                #{order.orderNumber}
+              </div>
+              <StatusBadge status={order.status} />
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Customer:</strong> {order.customerName}
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Product:</strong> {order.product} ({order.quantity})
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Payment:</strong> <StatusBadge status={order.paymentMod} />
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Date:</strong> {order.date}
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Total:</strong> ${order.total.toFixed(2)}
+            </div>
+            <div className="flex justify-between items-center pt-3 gap-2">
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleEdit(order.id)}
+                >
+                  Edit
+                </Button>
+                <button
+                  className="text-red-600 text-sm font-medium"
+                  onClick={() => handleDelete(order.id)}
+                >
+                  Delete
+                </button>
+              </div>
+              <Button variant="primary" size="sm" onClick={() => handleView(order.id)}>
+                View
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty State */}
       {filteredOrders.length === 0 && (
         <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
           <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No orders found
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Try adjusting your search or filters
-          </p>
-          <Button variant="primary" size="md">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
+          <p className="text-gray-600 mb-6">Try adjusting your search or filters</p>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setEditOrdereData(null);
+              setshowOrderForm(true);
+            }}
+          >
             Add Order
           </Button>
         </div>
