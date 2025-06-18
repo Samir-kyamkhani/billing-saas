@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   FaFileInvoiceDollar,
   FaUsers,
@@ -27,7 +27,7 @@ const links = [
   { to: "/team", label: "Team", icon: <FaUserShield /> },
   { to: "/subscriptions", label: "Subscriptions", icon: <FaRepeat /> },
   { to: "/settings", label: "Settings", icon: <FaCog /> },
-  { to: "/logout", label: "Logout", icon: <IoLogOut  /> },
+  { to: "/logout", label: "Logout", icon: <IoLogOut /> },
 ];
 
 export default function Sidebar() {
@@ -37,7 +37,9 @@ export default function Sidebar() {
     <>
       {/* Mobile toggle */}
       <div className="md:hidden flex justify-between items-center bg-white px-4 py-3 border-b border-gray-300 shadow-sm">
-        <h1 className="text-xl font-bold text-gray-700">Billing Software</h1>
+        <Link to={"/dashboard"}>
+          <h1 className="text-xl font-bold text-gray-700">Billing Software</h1>
+        </Link>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-2xl text-gray-700 focus:outline-none z-50 relative"
@@ -53,7 +55,11 @@ export default function Sidebar() {
     md:relative md:translate-x-0 md:h-auto md:block`}
       >
         <div className="text-2xl font-semibold text-gray-800 mb-8">
-          <h1>Billing Software</h1>
+          <Link to={"/dashboard"}>
+            <h1 className="text-xl font-bold text-gray-700">
+              Billing Software
+            </h1>
+          </Link>
         </div>
         <nav className="space-y-2">
           {links.map((link) => (
